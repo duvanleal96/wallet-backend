@@ -1,10 +1,10 @@
 import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
-import { Client } from './Client';
+import { ClientEntity } from './client.entity';
 
 @Index('pkapp', ['appId'], { unique: true })
 @Index('app_cli_id_Idx', ['cliId'], { unique: true })
 @Entity('app', { schema: 'public' })
-export class App {
+export class AppEntity {
   @Column('uuid', { primary: true, name: 'app_id' })
   appId: string;
 
@@ -30,10 +30,10 @@ export class App {
   })
   appUpdatedAt: Date | null;
 
-  @OneToOne(() => Client, (client) => client.app, {
+  @OneToOne(() => ClientEntity, (client) => client.app, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
   @JoinColumn([{ name: 'cli_id', referencedColumnName: 'cliId' }])
-  cli: Client;
+  cli: ClientEntity;
 }
