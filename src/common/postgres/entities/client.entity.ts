@@ -1,12 +1,12 @@
 import { Column, Entity, Index, OneToOne } from 'typeorm';
-import { Account } from './Account';
-import { App } from './App';
+import { AccountEntity } from './account.entity';
+import { AppEntity } from './app.entity';
 
 @Index('client_cli_email_Idx', ['cliEmail'], { unique: true })
 @Index('pkclient', ['cliId'], { unique: true })
 @Index('client_cli_phone_Idx', ['cliPhone'], { unique: true })
 @Entity('client', { schema: 'public' })
-export class Client {
+export class ClientEntity {
   @Column('uuid', { primary: true, name: 'cli_id' })
   cliId: string;
 
@@ -43,9 +43,9 @@ export class Client {
   })
   cliDeletedAt: Date | null;
 
-  @OneToOne(() => Account, (account) => account.cli)
-  account: Account;
+  @OneToOne(() => AccountEntity, (account) => account.cli)
+  account: AccountEntity;
 
-  @OneToOne(() => App, (app) => app.cli)
-  app: App;
+  @OneToOne(() => AppEntity, (app) => app.cli)
+  app: AppEntity;
 }

@@ -1,5 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { Account } from './Account';
+import { AccountEntity } from './account.entity';
 
 @Index(
   'movement_acc_id_income_acc_id_outcome_Idx',
@@ -8,7 +8,7 @@ import { Account } from './Account';
 )
 @Index('pkmovement', ['movId'], { unique: true })
 @Entity('movement', { schema: 'public' })
-export class Movement {
+export class MovementEntity {
   @Column('uuid', { primary: true, name: 'mov_id' })
   movId: string;
 
@@ -33,17 +33,17 @@ export class Movement {
   })
   movDatetime: Date;
 
-  @ManyToOne(() => Account, (account) => account.movements, {
+  @ManyToOne(() => AccountEntity, (account) => account.movements, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
   @JoinColumn([{ name: 'acc_id_income', referencedColumnName: 'accId' }])
-  accIdIncome2: Account;
+  accIdIncome2: AccountEntity;
 
-  @ManyToOne(() => Account, (account) => account.movements2, {
+  @ManyToOne(() => AccountEntity, (account) => account.movements2, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
   @JoinColumn([{ name: 'acc_id_outcome', referencedColumnName: 'accId' }])
-  accIdOutcome2: Account;
+  accIdOutcome2: AccountEntity;
 }
