@@ -8,43 +8,45 @@ import {
 } from 'typeorm';
 import { ClientEntity } from './client.entity';
 import { MovementEntity } from './movement.entity';
+import { v4 as uuid } from 'uuid';
+import { AccountDto } from '../../../modules/account/dto/account.dto';
 
 @Index('pkaccount', ['accId'], { unique: true })
 @Index('account_cli_id_Idx', ['cliId'], { unique: true })
 @Entity('account', { schema: 'public' })
 export class AccountEntity {
   @Column('uuid', { primary: true, name: 'acc_id' })
-  accId: string;
+  accId: string = uuid();
 
   @Column('uuid', { name: 'cli_id' })
   cliId: string;
 
   @Column('bigint', { name: 'acc_balance', default: () => '0' })
-  accBalance: string;
+  balance: string;
 
   @Column('bigint', { name: 'acc_credit', default: () => '50000000' })
-  accCredit: string;
+  credit: string;
 
   @Column('integer', { name: 'acc_state', default: () => '1' })
-  accState: number;
+  state: number;
 
   @Column('timestamp without time zone', {
     name: 'acc_created_at',
     default: () => 'now()',
   })
-  accCreatedAt: Date;
+  createdAt: Date;
 
   @Column('timestamp without time zone', {
     name: 'acc_updated_at',
     nullable: true,
   })
-  accUpdatedAt: Date | null;
+  updatedAt: Date | null;
 
   @Column('timestamp without time zone', {
     name: 'acc_deleted_at',
     nullable: true,
   })
-  accDeletedAt: Date | null;
+  deletedAt: Date | null;
 
   @OneToOne(() => ClientEntity, (client) => client.account, {
     onDelete: 'RESTRICT',
@@ -58,4 +60,14 @@ export class AccountEntity {
 
   @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome2)
   movements2: MovementEntity[];
+
+  constructor(account?: AccountDto) {
+    if (account?.accId) this.accId = account.id;
+    if (account?.balance) this.balance = account.balance;
+    if (account?.credit) this.credit = account.credit;
+    if (account?.state) this.state = account.state;
+    if (account?.createdAt) this.createdAt = account.createdAt;
+    if (account?.updatedAt) this.updatedAt = account.updatedAt;
+    if (account?.deletedAt) this.deletedAt = account.deletedAt;
+  }
 }

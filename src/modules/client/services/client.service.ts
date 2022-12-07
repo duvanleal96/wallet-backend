@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ClientEntity } from '../../../common/postgres/entities/client.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AppsService } from '../../apps/services/apps.service';
 import { ClientGetDto } from '../dto/client.get.dto';
 import { ClienteCreateDto } from '../dto/cliente.create.dto';
@@ -10,40 +10,30 @@ import { ClienteCreateDto } from '../dto/cliente.create.dto';
 export class ClientService {
   constructor(
     private readonly appService: AppsService,
+    private readonly dataSource: DataSource,
     @InjectRepository(ClientEntity)
     private readonly clientRepository: Repository<ClientEntity>,
   ) {}
 
-  async createClient(
-    client: ClienteCreateDto,
-  ): Promise<ClientEntity | undefined> {
+  async createClient(clientInput: ClienteCreateDto): Promise<ClientEntity> {
+    const client = new ClientEntity(clientInput);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      return await this.clientRepository.save(client);
-    } catch (error) {
-      switch (error.code) {
-        case '23505':
-          if (error.constraint === 'client_cli_email_Idx')
-            throw new HttpException(
-              'Email is already registered',
-              HttpStatus.CONFLICT,
-            );
-          else if (error.constraint === 'client_cli_phone_Idx')
-            throw new HttpException(
-              'The telephone number is already registered',
-              HttpStatus.CONFLICT,
-            );
-          break;
-        default:
-          throw new HttpException(
-            'We have problems creating a client. Code: ' +
-              error.code +
-              '. ' +
-              error.detail,
-            HttpStatus.CONFLICT,
-          );
-      }
+      const newClient = await queryRunner.manager.save(client);
+      await queryRunner.commitTransaction();
+      return Promise.resolve(newClient);
+    } catch (err) {
+      // since we have errors lets rollback the changes we made
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        'Tenemos problemas para insertar un cliente',
+        HttpStatus.CONFLICT,
+      );
     }
   }
+
   async getClientByEmail(email: string): Promise<ClientGetDto> {
     try {
       const client = await this.clientRepository.findOneOrFail({
