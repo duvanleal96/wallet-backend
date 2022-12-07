@@ -2,17 +2,18 @@ import { Column, Entity, Index, OneToOne } from 'typeorm';
 import { AccountEntity } from './account.entity';
 import { AppEntity } from './app.entity';
 import { ClienteCreateDto } from '../../../modules/client/dto/cliente.create.dto';
+import { v4 as uuid } from 'uuid';
 
-@Index('client_cli_email_Idx', ['cliEmail'], { unique: true })
-@Index('pkclient', ['cliId'], { unique: true })
-@Index('client_cli_phone_Idx', ['cliPhone'], { unique: true })
+@Index('client_cli_email_Idx', ['email'], { unique: true })
+@Index('pkclient', ['id'], { unique: true })
+@Index('client_cli_phone_Idx', ['phone'], { unique: true })
 @Entity('client', { schema: 'public' })
 export class ClientEntity {
   @Column('uuid', { primary: true, name: 'cli_id' })
-  cliId: string;
+  id: string = uuid();
 
   @Column('character varying', { name: 'cli_full_name', length: 500 })
-  fulName: string;
+  fullName: string;
 
   @Column('character varying', { name: 'cli_email', length: 500 })
   email: string;
@@ -51,10 +52,10 @@ export class ClientEntity {
   app: AppEntity;
 
   constructor(client?: ClienteCreateDto) {
-    this.fulName = client?.fullName;
-    this.email = client?.email;
-    this.phone = client?.phone;
-    this.photo = client?.photo;
+    this.fullName = client?.fullName ?? '';
+    this.email = client?.email ?? '';
+    this.phone = client?.phone ?? '';
+    this.photo = client?.photo ?? '';
     this.state = client?.state ?? 1;
     this.createAt = new Date();
     this.updateAt = null;

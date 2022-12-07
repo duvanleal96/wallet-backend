@@ -5,8 +5,8 @@ import {
   IsNumber,
   IsOptional,
 } from 'class-validator';
-import { AccountEntity } from 'src/common/postgres/entities/account.entity';
-import { AppEntity } from 'src/common/postgres/entities/app.entity';
+import { AccountEntity } from '../../../common/postgres/entities/account.entity';
+import { AppEntity } from '../../../common/postgres/entities/app.entity';
 
 export class ClienteCreateDto {
   @IsOptional()

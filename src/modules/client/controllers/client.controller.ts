@@ -1,7 +1,15 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
-import { ClientEntity } from 'src/common/postgres/entities/client.entity';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  ValidationPipe,
+} from '@nestjs/common';
+import { ClientEntity } from '../../../common/postgres/entities/client.entity';
 import { ClientService } from '../services/client.service';
 import { ClienteCreateDto } from '../dto/cliente.create.dto';
+import { ClientGetDto } from '../dto/client.get.dto';
 
 @Controller('api/client')
 export class ClientController {
@@ -17,7 +25,12 @@ export class ClientController {
       }),
     )
     newClient: ClienteCreateDto,
-  ): Promise<ClientEntity> {
-    return this.clientService.createNewClient(newClient);
+  ): Promise<ClientEntity | undefined> {
+    return this.clientService.createClient(newClient);
+  }
+
+  @Get('email')
+  getClient(@Param('email') email: string): Promise<ClientGetDto> {
+    return this.clientService.getClientByEmail(email);
   }
 }

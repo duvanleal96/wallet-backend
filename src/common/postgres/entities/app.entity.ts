@@ -14,26 +14,26 @@ export class AppEntity {
   @Column('character varying', {
     name: 'app_color',
     length: 30,
-    default: () => "'default'",
+    default: () => "'blue'",
   })
-  appColor: string;
+  color: 'blue';
 
   @Column('timestamp without time zone', {
     name: 'app_created_at',
     default: () => 'now()',
   })
-  appCreatedAt: Date;
+  createdAt: Date;
 
   @Column('timestamp without time zone', {
     name: 'app_updated_at',
     nullable: true,
   })
-  appUpdatedAt: Date | null;
+  updatedAt: Date | null;
 
   @OneToOne(() => ClientEntity, (client) => client.app, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
-  @JoinColumn([{ name: 'cli_id', referencedColumnName: 'cliId' }])
+  @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
   cli: ClientEntity;
 }

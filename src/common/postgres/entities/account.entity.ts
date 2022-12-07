@@ -50,7 +50,7 @@ export class AccountEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
-  @JoinColumn([{ name: 'cli_id', referencedColumnName: 'cliId' }])
+  @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
   cli: ClientEntity;
 
   @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome2)
