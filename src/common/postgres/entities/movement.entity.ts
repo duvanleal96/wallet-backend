@@ -1,5 +1,7 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { AccountEntity } from './account.entity';
+import { v4 as uuid } from 'uuid';
+import { MovementCreateDto } from '../../../modules/movement/dto/movement.create.dto';
 
 @Index(
   'movement_acc_id_income_acc_id_outcome_Idx',
@@ -10,7 +12,7 @@ import { AccountEntity } from './account.entity';
 @Entity('movement', { schema: 'public' })
 export class MovementEntity {
   @Column('uuid', { primary: true, name: 'mov_id' })
-  movId: string;
+  movId: string = uuid();
 
   @Column('uuid', { name: 'acc_id_income' })
   accIdIncome: string;
@@ -19,13 +21,13 @@ export class MovementEntity {
   accIdOutcome: string;
 
   @Column('character varying', { name: 'mov_reason', length: 500 })
-  movReason: string;
+  reason: string;
 
   @Column('bigint', { name: 'mov_amount' })
-  movAmount: string;
+  amount: number;
 
   @Column('integer', { name: 'mov_fees', default: () => '1' })
-  movFees: number;
+  fees: number;
 
   @Column('timestamp without time zone', {
     name: 'mov_datetime',
@@ -46,4 +48,12 @@ export class MovementEntity {
   })
   @JoinColumn([{ name: 'acc_id_outcome', referencedColumnName: 'accId' }])
   accIdOutcome2: AccountEntity;
+
+  constructor(movement?: MovementCreateDto) {
+    this.accIdIncome = movement?.idIncome ?? '';
+    this.accIdOutcome = movement?.idOutcome ?? '';
+    this.reason = movement?.reason ?? '';
+    this.amount = movement?.amount ?? 50000000;
+    this.fees = movement?.fees ?? 60;
+  }
 }
