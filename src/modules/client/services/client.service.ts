@@ -39,7 +39,7 @@ export class ClientService {
       const client = await this.clientRepository.findOneOrFail({
         where: { email: email },
       });
-      const color = await this.appService.getColor(client.id);
+      const color = await this.appService.getColorByIdClient(client.id);
       return {
         id: client.id,
         fullName: client.fullName,

@@ -1,12 +1,13 @@
 import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 import { ClientEntity } from './client.entity';
+import { AppsInterface } from '../../../modules/apps/interface/apps.interface';
 
 @Index('pkapp', ['appId'], { unique: true })
 @Index('app_cli_id_Idx', ['cliId'], { unique: true })
 @Entity('app', { schema: 'public' })
 export class AppEntity {
   @Column('uuid', { primary: true, name: 'app_id' })
-  appId: string;
+  id: string;
 
   @Column('uuid', { name: 'cli_id' })
   cliId: string;
@@ -14,9 +15,9 @@ export class AppEntity {
   @Column('character varying', {
     name: 'app_color',
     length: 30,
-    default: () => "'blue'",
+    default: () => "'#1554F6'",
   })
-  color: 'blue';
+  color: string;
 
   @Column('timestamp without time zone', {
     name: 'app_created_at',

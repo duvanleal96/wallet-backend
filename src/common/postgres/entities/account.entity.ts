@@ -55,11 +55,11 @@ export class AccountEntity {
   @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
   cli: ClientEntity;
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome2)
-  movements: MovementEntity[];
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome)
+  movementsIncome: MovementEntity[];
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome2)
-  movements2: MovementEntity[];
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome)
+  movementsOutcome: MovementEntity[];
 
   constructor(account?: AccountDto) {
     if (account?.accId) this.accId = account.id;

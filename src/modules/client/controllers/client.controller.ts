@@ -29,8 +29,8 @@ export class ClientController {
     return this.clientService.createClient(newClient);
   }
 
-  @Get('email')
-  getClient(@Param('email') email: string): Promise<ClientGetDto> {
+  @Get(':email')
+  getClientByEmail(@Param('email') email: string): Promise<ClientGetDto> {
     return this.clientService.getClientByEmail(email);
   }
 }
