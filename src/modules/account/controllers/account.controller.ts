@@ -7,6 +7,6 @@ export class AccountController {
 
   @Get(':id')
   getAccountById(@Param('id') id: string) {
-    return this.accountService.getAccountById(id);
+    return this.accountService.getAccountInfo(id);
   }
 }

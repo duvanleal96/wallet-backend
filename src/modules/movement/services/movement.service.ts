@@ -10,9 +10,20 @@ export class MovementService {
     @InjectRepository(MovementEntity)
     private readonly movementRepository: Repository<MovementEntity>,
   ) {}
-
-  createMovement(movementInput: MovementCreateDto): Promise<MovementEntity> {
-    const movement = new MovementEntity(movementInput);
+  async getMovments(accId: string): Promise<MovementEntity[]> {
+    const movements: MovementEntity[] = await this.movementRepository.find({
+      where: [{ accIdIncome: accId }, { accIdOutcome: accId }],
+    });
+    return movements;
+  }
+  addPayment(payment: MovementCreateDto) {
+    console.log('dto :>> ', payment);
+    const movement = new MovementEntity();
+    movement.accIdIncome = payment.idIncome;
+    movement.accIdOutcome = payment.idOutcome;
+    movement.reason = payment.reason;
+    movement.amount = payment.amount;
+    movement.fees = 1;
     return this.movementRepository.save(movement);
   }
 }

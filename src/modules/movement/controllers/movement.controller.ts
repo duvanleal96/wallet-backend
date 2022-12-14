@@ -17,6 +17,6 @@ export class MovementController {
     )
     newMovement: MovementCreateDto,
   ) {
-    return this.movementService.createMovement(newMovement);
+    return this.movementService.addPayment(newMovement);
   }
 }

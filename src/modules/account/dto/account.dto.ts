@@ -4,7 +4,7 @@ import { AccountInterface } from '../interface/account.interface';
 
 export class AccountDto implements AccountInterface {
   id: string;
-  idClient: string;
+  cliId: string;
   balance: string;
   credit: string;
   state: number;
@@ -14,5 +14,4 @@ export class AccountDto implements AccountInterface {
   client: ClientEntity;
   movementsIncome: MovementEntity[];
   movementsOutcome: MovementEntity[];
-  accId: any;
 }

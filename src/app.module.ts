@@ -10,18 +10,23 @@ import { AppController } from './modules/main/controller/app.controller';
 import { AppService } from './modules/main/services/app.service';
 import { MovementModule } from './modules/movement/movement.module';
 import { AppsModule } from './modules/apps/apps.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: '127.0.0.1',
-      port: 5432,
-      username: 'postgres',
-      password: 'root',
-      database: 'wallet',
-      entities: [AccountEntity, AppEntity, ClientEntity, MovementEntity],
-      synchronize: false,
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: '127.0.0.1',
+        port: 5432,
+        username: 'postgres',
+        password: 'root',
+        database: 'wallet',
+        entities: [AccountEntity, AppEntity, ClientEntity, MovementEntity],
+        synchronize: false,
+      }),
+      inject: [ConfigService],
     }),
     AccountModule,
     AppsModule,

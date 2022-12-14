@@ -48,12 +48,4 @@ export class MovementEntity {
   })
   @JoinColumn([{ name: 'acc_id_outcome', referencedColumnName: 'accId' }])
   accIdOutcome2: AccountEntity;
-
-  constructor(movement?: MovementCreateDto) {
-    this.accIdIncome = movement?.idIncome ?? '';
-    this.accIdOutcome = movement?.idOutcome ?? '';
-    this.reason = movement?.reason ?? '';
-    this.amount = movement?.amount ?? 50000000;
-    this.fees = movement?.fees ?? 60;
-  }
 }

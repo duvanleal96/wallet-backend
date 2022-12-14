@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 import { ClientEntity } from './client.entity';
 import { AppsInterface } from '../../../modules/apps/interface/apps.interface';
 
-@Index('pkapp', ['appId'], { unique: true })
+@Index('pkapp', ['id'], { unique: true })
 @Index('app_cli_id_Idx', ['cliId'], { unique: true })
 @Entity('app', { schema: 'public' })
 export class AppEntity {
@@ -15,7 +15,7 @@ export class AppEntity {
   @Column('character varying', {
     name: 'app_color',
     length: 30,
-    default: () => "'#1554F6'",
+    default: () => "'default'",
   })
   color: string;
 
@@ -37,4 +37,7 @@ export class AppEntity {
   })
   @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
   cli: ClientEntity;
+  constructor(app?: AppsInterface) {
+    if (app?.color) this.color = app?.color;
+  }
 }

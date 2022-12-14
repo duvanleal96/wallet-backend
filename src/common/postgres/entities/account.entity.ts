@@ -62,7 +62,7 @@ export class AccountEntity {
   movementsOutcome: MovementEntity[];
 
   constructor(account?: AccountDto) {
-    if (account?.accId) this.accId = account.id;
+    if (account?.cliId) this.cliId = account.cliId;
     if (account?.balance) this.balance = account.balance;
     if (account?.credit) this.credit = account.credit;
     if (account?.state) this.state = account.state;
