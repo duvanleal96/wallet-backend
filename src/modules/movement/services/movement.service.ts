@@ -17,13 +17,23 @@ export class MovementService {
     return movements;
   }
   addPayment(payment: MovementCreateDto) {
-    console.log('dto :>> ', payment);
+    console.log('payment --> ', payment);
     const movement = new MovementEntity();
     movement.accIdIncome = payment.idIncome;
     movement.accIdOutcome = payment.idOutcome;
     movement.reason = payment.reason;
     movement.amount = payment.amount;
     movement.fees = 1;
+    return this.movementRepository.save(movement);
+  }
+  createLoan(loan: MovementCreateDto) {
+    console.log('loan --> ', loan);
+    const movement = new MovementEntity();
+    movement.accIdIncome = loan.idIncome;
+    movement.accIdOutcome = loan.idIncome;
+    movement.reason = loan.reason;
+    movement.amount = loan.amount;
+    movement.fees = 60;
     return this.movementRepository.save(movement);
   }
 }

@@ -5,8 +5,8 @@ import { AccountInterface } from '../interface/account.interface';
 export class AccountDto implements AccountInterface {
   id: string;
   cliId: string;
-  balance: string;
-  credit: string;
+  balance: number;
+  credit: number;
   state: number;
   createdAt: Date | null;
   updatedAt: Date | null;
