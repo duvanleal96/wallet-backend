@@ -25,10 +25,6 @@ export class MovementEntity {
 
   @Column('bigint', {
     name: 'mov_amount',
-    transformer: {
-      to: (value) => value,
-      from: (value) => parseInt(value),
-    },
   })
   amount: number;
 
@@ -56,10 +52,10 @@ export class MovementEntity {
   accIdOutcome2: AccountEntity;
 
   constructor(movement?: MovementCreateDto) {
-    this.accIdIncome = movement?.idIncome;
-    this.accIdOutcome = movement?.idOutcome;
-    this.reason = movement?.reason;
-    this.amount = movement?.amount;
-    this.fees = movement?.fees;
+    this.accIdIncome = movement?.idIncome ?? '';
+    this.accIdOutcome = movement?.idOutcome ?? '';
+    this.reason = movement?.reason ?? '';
+    this.amount = movement?.amount ?? 0;
+    this.fees = movement?.fees ?? 0;
   }
 }
