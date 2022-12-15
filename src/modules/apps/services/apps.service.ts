@@ -11,21 +11,20 @@ export class AppsService {
     private readonly appRepository: Repository<AppEntity>,
   ) {}
 
-  async getColorByIdClient(id: string) {
-    const app = await this.appRepository.findOne({
-      where: {
-        cliId: id,
-      },
-    });
-    return app?.color;
+  async updateApp(id: string, updateApp: appsDto) {
+    const app = await this.getAppByIdClient(id);
+    app.color = updateApp.color;
+    app.updatedAt = new Date(Date.now());
+    const newApp = await this.appRepository.save(app);
+    return Promise.resolve(newApp);
   }
 
-  async updateApp(updateApp: appsDto) {
-    const appNew = await this.appRepository.update(
-      { cliId: updateApp.cliId },
-      { color: updateApp.color },
-    );
-    console.log(appNew);
-    return updateApp;
+  async getAppByIdClient(id: string): Promise<AppEntity> {
+    const account = await this.appRepository.findOne({
+      where: {
+        idClient: id,
+      },
+    });
+    return Promise.resolve(account as AppEntity);
   }
 }

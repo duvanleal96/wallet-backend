@@ -1,13 +1,15 @@
-import { Body, Controller, Put, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Param, Put, ValidationPipe } from '@nestjs/common';
 import { appsDto } from '../dto/apps.dto';
 import { AppsService } from '../services/apps.service';
 
 @Controller('api/apps/theme')
 export class AppsController {
-  constructor(private readonly AppsService: AppsService) {}
+  constructor(private readonly appsService: AppsService) {}
 
-  @Put()
+  @Put(':id')
+  //@UseGuards(AuthGuard)
   updateApp(
+    @Param('id') id: string,
     @Body(
       new ValidationPipe({
         transform: true,
@@ -17,6 +19,6 @@ export class AppsController {
     )
     updateApp: appsDto,
   ) {
-    return this.AppsService.updateApp(updateApp);
+    return this.appsService.updateApp(id, updateApp);
   }
 }

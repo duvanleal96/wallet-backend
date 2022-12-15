@@ -1,11 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../../../common/postgres/entities/account.entity';
-import { AccountDto } from '../dto/account.dto';
 import { MovementService } from '../../../modules/movement/services/movement.service';
-import { MovementCreateDto } from '../../movement/dto/movement.create.dto';
-import { LoanDto } from '../dto/loans.dto';
+import { AccountUpdateDto } from '../dto/update.account.dto';
 
 @Injectable()
 export class AccountService {
@@ -15,67 +13,25 @@ export class AccountService {
     private readonly movementService: MovementService,
   ) {}
 
-  async getAccountInfo(id: string): Promise<AccountDto> {
-    const accountDto = new AccountDto();
-    const account = await this.accountRepository.findOneOrFail({
-      where: { cliId: id },
+  async getAccountByIdClient(id: string): Promise<AccountEntity> {
+    const account = await this.accountRepository.findOne({
+      where: {
+        idClient: id,
+      },
       relations: {
         movementsIncome: true,
         movementsOutcome: true,
       },
     });
-    const movements = await this.movementService.getMovments(account.id);
-    accountDto.id = account.id;
-    accountDto.cliId = account.cliId;
-    accountDto.balance = account.balance;
-    accountDto.credit = account.credit;
-    accountDto.movements = movements;
-    return accountDto;
+    return account as AccountEntity;
   }
-  async newLoan(loan: LoanDto) {
-    try {
-      const account: AccountEntity = await this.accountRepository.findOneOrFail(
-        {
-          where: { id: loan.idIncome },
-        },
-      );
-      const movement = await this.movementService.createLoan(loan);
-      account.balance += loan.amount;
-      account.credit -= loan.amount;
-      this.accountRepository.save(account);
-      return movement;
-    } catch (error) {
-      throw new HttpException(
-        'oh ha ocurrido un error --> ' + error,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-  }
-  async newPayment(payment: MovementCreateDto) {
-    try {
-      const accountIncome: AccountEntity =
-        await this.accountRepository.findOneOrFail({
-          where: { id: payment.idIncome },
-        });
-      console.log('accountIncome :>> ', accountIncome);
-      const accountOutcome: AccountEntity =
-        await this.accountRepository.findOneOrFail({
-          where: { id: payment.idOutcome },
-        });
-      console.log('accountOutcome :>> ', accountOutcome);
-      if (accountOutcome.balance < payment.amount) {
-        throw new HttpException('Insuficent funds', HttpStatus.BAD_REQUEST);
-      }
-      const movement = await this.movementService.addPayment(payment);
-      accountIncome.balance += payment.amount;
-      accountOutcome.balance -= payment.amount;
-      this.accountRepository.save([accountIncome, accountOutcome]);
-      return movement;
-    } catch (error) {
-      throw new HttpException(
-        'oh ha ocurrido un error -->' + error,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+
+  async updateAccount(id: string, updateAccount: AccountUpdateDto) {
+    const account = await this.getAccountByIdClient(id);
+    account.balance = updateAccount.balance;
+    account.credit = updateAccount.credit;
+    account.updatedAt = new Date(Date.now());
+    const newAccount = await this.accountRepository.save(account);
+    return Promise.resolve(newAccount);
   }
 }

@@ -4,8 +4,8 @@ import { MovementEntity } from '../../../common/postgres/entities/movement.entit
 export interface AccountInterface {
   id: string;
   idClient: string;
-  balance: number;
-  credit: number;
+  balance: string;
+  credit: string;
   state: number;
   createdAt: Date | null;
   updatedAt: Date | null;
