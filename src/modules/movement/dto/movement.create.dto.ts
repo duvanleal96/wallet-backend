@@ -15,13 +15,13 @@ export class MovementCreateDto implements MovementInterface {
   @IsString({
     message: 'The `idIncome` argument must be of type string',
   })
-  idIncome: string;
+  accIdIncome: string;
 
   @IsNotEmpty()
   @IsString({
     message: 'The `idOutcome` argument must be of type string',
   })
-  idOutcome: string;
+  accIdOutcome: string;
 
   @IsNotEmpty()
   @IsString({

@@ -52,10 +52,10 @@ export class MovementEntity {
   accIdOutcome2: AccountEntity;
 
   constructor(movement?: MovementCreateDto) {
-    this.accIdIncome = movement?.idIncome ?? '';
-    this.accIdOutcome = movement?.idOutcome ?? '';
-    this.reason = movement?.reason ?? '';
-    this.amount = movement?.amount ?? 0;
-    this.fees = movement?.fees ?? 0;
+    this.accIdIncome = movement?.accIdIncome as string;
+    this.accIdOutcome = movement?.accIdOutcome as string;
+    this.reason = movement?.reason as string;
+    this.amount = movement?.amount as number;
+    this.fees = movement?.fees as number;
   }
 }

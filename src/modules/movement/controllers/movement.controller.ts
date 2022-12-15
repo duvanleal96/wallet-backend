@@ -7,7 +7,8 @@ export class MovementController {
   constructor(private readonly movementService: MovementService) {}
 
   @Post()
-  createNewMovement(
+  //@UseGuards(AuthGuard)
+  createMovement(
     @Body(
       new ValidationPipe({
         transform: true,
@@ -17,6 +18,6 @@ export class MovementController {
     )
     newMovement: MovementCreateDto,
   ) {
-    return this.movementService.addPayment(newMovement);
+    return this.movementService.createMovement(newMovement);
   }
 }

@@ -21,7 +21,7 @@ export class AccountEntity {
   @Column('uuid', { name: 'cli_id' })
   idClient: string;
 
-  @Column('bigint', { name: 'acc_balance', default: () => '0' })
+  @Column('bigint', { name: 'acc_balance', default: () => '10000' })
   balance: string;
 
   @Column('bigint', { name: 'acc_credit', default: () => '50000000' })
@@ -55,21 +55,21 @@ export class AccountEntity {
   @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
   client: ClientEntity;
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome, {
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome2, {
     cascade: ['update'],
   })
   movementsIncome: MovementEntity[];
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome, {
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome2, {
     cascade: ['update'],
   })
   movementsOutcome: MovementEntity[];
 
   constructor(account?: AccountDto) {
-    if (account?.id) this.id = account.id as string;
-    if (account?.balance) this.balance = account.balance as string;
-    if (account?.credit) this.credit = account.credit as string;
-    if (account?.state) this.state = account.state as number;
+    if (account?.id) this.id = account.id;
+    if (account?.balance) this.balance = account.balance;
+    if (account?.credit) this.credit = account.credit;
+    if (account?.state) this.state = account.state;
     if (account?.createdAt) this.createdAt = account.createdAt;
     if (account?.updatedAt) this.updatedAt = account.updatedAt;
     if (account?.deletedAt) this.deletedAt = account.deletedAt;
