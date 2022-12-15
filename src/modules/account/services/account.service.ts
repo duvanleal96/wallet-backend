@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MovementInterface } from '../../../modules/movement/interface/movement.interface.dto';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../../../common/postgres/entities/account.entity';
 import { AccountDto } from '../dto/account.dto';
 import { MovementService } from '../../../modules/movement/services/movement.service';
 import { MovementCreateDto } from '../../movement/dto/movement.create.dto';
+import { LoanDto } from '../dto/loans.dto';
 
 @Injectable()
 export class AccountService {
@@ -24,19 +24,19 @@ export class AccountService {
         movementsOutcome: true,
       },
     });
-    const movements = await this.movementService.getMovments(account.accId);
-    accountDto.id = account.accId;
+    const movements = await this.movementService.getMovments(account.id);
+    accountDto.id = account.id;
     accountDto.cliId = account.cliId;
     accountDto.balance = account.balance;
     accountDto.credit = account.credit;
-    accountDto.movementsIncome = movements;
+    accountDto.movements = movements;
     return accountDto;
   }
-  async newLoan(loan: MovementCreateDto) {
+  async newLoan(loan: LoanDto) {
     try {
       const account: AccountEntity = await this.accountRepository.findOneOrFail(
         {
-          where: { cliId: loan.idIncome },
+          where: { id: loan.idIncome },
         },
       );
       const movement = await this.movementService.createLoan(loan);
@@ -46,7 +46,7 @@ export class AccountService {
       return movement;
     } catch (error) {
       throw new HttpException(
-        'oh ha ocurrido un error -->' + error,
+        'oh ha ocurrido un error --> ' + error,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -55,12 +55,12 @@ export class AccountService {
     try {
       const accountIncome: AccountEntity =
         await this.accountRepository.findOneOrFail({
-          where: { cliId: payment.idIncome },
+          where: { id: payment.idIncome },
         });
       console.log('accountIncome :>> ', accountIncome);
       const accountOutcome: AccountEntity =
         await this.accountRepository.findOneOrFail({
-          where: { cliId: payment.idOutcome },
+          where: { id: payment.idOutcome },
         });
       console.log('accountOutcome :>> ', accountOutcome);
       if (accountOutcome.balance < payment.amount) {

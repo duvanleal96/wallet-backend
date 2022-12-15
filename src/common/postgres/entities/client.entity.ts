@@ -45,10 +45,14 @@ export class ClientEntity {
   })
   deleteAll: Date | null;
 
-  @OneToOne(() => AccountEntity, (account) => account.cli)
+  @OneToOne(() => AccountEntity, (account) => account.cli, {
+    cascade: ['insert'],
+  })
   account: AccountEntity;
 
-  @OneToOne(() => AppEntity, (app) => app.cli)
+  @OneToOne(() => AppEntity, (app) => app.cli, {
+    cascade: ['insert'],
+  })
   app: AppEntity;
 
   constructor(client?: ClienteCreateDto) {

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { LoanDto } from '../../../modules/account/dto/loans.dto';
 import { Repository } from 'typeorm';
 import { MovementEntity } from '../../../common/postgres/entities/movement.entity';
 import { MovementCreateDto } from '../dto/movement.create.dto';
@@ -26,7 +27,7 @@ export class MovementService {
     movement.fees = 1;
     return this.movementRepository.save(movement);
   }
-  createLoan(loan: MovementCreateDto) {
+  createLoan(loan: LoanDto) {
     console.log('loan --> ', loan);
     const movement = new MovementEntity();
     movement.accIdIncome = loan.idIncome;

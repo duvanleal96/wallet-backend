@@ -11,20 +11,34 @@ import { MovementEntity } from './movement.entity';
 import { v4 as uuid } from 'uuid';
 import { AccountDto } from '../../../modules/account/dto/account.dto';
 
-@Index('pkaccount', ['accId'], { unique: true })
+@Index('pkaccount', ['id'], { unique: true })
 @Index('account_cli_id_Idx', ['cliId'], { unique: true })
 @Entity('account', { schema: 'public' })
 export class AccountEntity {
   @Column('uuid', { primary: true, name: 'acc_id' })
-  accId: string = uuid();
+  id: string = uuid();
 
   @Column('uuid', { name: 'cli_id' })
   cliId: string;
 
-  @Column('bigint', { name: 'acc_balance', default: () => '0' })
+  @Column('bigint', {
+    name: 'acc_balance',
+    default: () => '0',
+    transformer: {
+      to: (value) => value,
+      from: (value) => parseInt(value),
+    },
+  })
   balance: number;
 
-  @Column('bigint', { name: 'acc_credit', default: () => '50000000' })
+  @Column('bigint', {
+    name: 'acc_credit',
+    default: () => '50000000',
+    transformer: {
+      to: (value) => value,
+      from: (value) => parseInt(value),
+    },
+  })
   credit: number;
 
   @Column('integer', { name: 'acc_state', default: () => '1' })
@@ -49,20 +63,25 @@ export class AccountEntity {
   deletedAt: Date | null;
 
   @OneToOne(() => ClientEntity, (client) => client.account, {
+    cascade: ['insert'],
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
   @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
   cli: ClientEntity;
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome)
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome, {
+    cascade: ['insert'],
+  })
   movementsIncome: MovementEntity[];
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome)
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome, {
+    cascade: ['insert'],
+  })
   movementsOutcome: MovementEntity[];
 
   constructor(account?: AccountDto) {
-    if (account?.cliId) this.cliId = account.cliId;
+    if (account?.id) this.id = account.id;
     if (account?.balance) this.balance = account.balance;
     if (account?.credit) this.credit = account.credit;
     if (account?.state) this.state = account.state;

@@ -18,10 +18,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
-        host: '127.0.0.1',
-        port: 5432,
-        username: 'postgres',
-        password: 'root',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USER'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
         database: 'wallet',
         entities: [AccountEntity, AppEntity, ClientEntity, MovementEntity],
         synchronize: false,

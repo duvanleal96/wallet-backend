@@ -3,7 +3,7 @@ import { MovementEntity } from '../../../common/postgres/entities/movement.entit
 
 export interface AccountInterface {
   id: string;
-  cliId: string;
+  idClient: string;
   balance: number;
   credit: number;
   state: number;

@@ -1,6 +1,5 @@
 import { Column, Entity, Index, JoinColumn, OneToOne } from 'typeorm';
 import { ClientEntity } from './client.entity';
-import { AppsInterface } from '../../../modules/apps/interface/apps.interface';
 
 @Index('pkapp', ['id'], { unique: true })
 @Index('app_cli_id_Idx', ['cliId'], { unique: true })
@@ -15,7 +14,7 @@ export class AppEntity {
   @Column('character varying', {
     name: 'app_color',
     length: 30,
-    default: () => "'default'",
+    default: () => "'#1554F6'",
   })
   color: string;
 
@@ -37,7 +36,4 @@ export class AppEntity {
   })
   @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
   cli: ClientEntity;
-  constructor(app?: AppsInterface) {
-    if (app?.color) this.color = app?.color;
-  }
 }
