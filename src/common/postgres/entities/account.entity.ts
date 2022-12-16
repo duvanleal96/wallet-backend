@@ -11,17 +11,17 @@ import { MovementEntity } from './movement.entity';
 import { v4 as uuid } from 'uuid';
 import { AccountDto } from '../../../modules/account/dto/account.dto';
 
-@Index('pkaccount', ['accId'], { unique: true })
-@Index('account_cli_id_Idx', ['cliId'], { unique: true })
+@Index('pkaccount', ['id'], { unique: true })
+@Index('account_cli_id_Idx', ['idClient'], { unique: true })
 @Entity('account', { schema: 'public' })
 export class AccountEntity {
   @Column('uuid', { primary: true, name: 'acc_id' })
-  accId: string = uuid();
+  id: string = uuid();
 
   @Column('uuid', { name: 'cli_id' })
-  cliId: string;
+  idClient: string;
 
-  @Column('bigint', { name: 'acc_balance', default: () => '0' })
+  @Column('bigint', { name: 'acc_balance', default: () => '10000' })
   balance: string;
 
   @Column('bigint', { name: 'acc_credit', default: () => '50000000' })
@@ -53,16 +53,20 @@ export class AccountEntity {
     onUpdate: 'RESTRICT',
   })
   @JoinColumn([{ name: 'cli_id', referencedColumnName: 'id' }])
-  cli: ClientEntity;
+  client: ClientEntity;
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome2)
-  movements: MovementEntity[];
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdIncome2, {
+    cascade: ['update'],
+  })
+  movementsIncome: MovementEntity[];
 
-  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome2)
-  movements2: MovementEntity[];
+  @OneToMany(() => MovementEntity, (movement) => movement.accIdOutcome2, {
+    cascade: ['update'],
+  })
+  movementsOutcome: MovementEntity[];
 
   constructor(account?: AccountDto) {
-    if (account?.accId) this.accId = account.id;
+    if (account?.id) this.id = account.id;
     if (account?.balance) this.balance = account.balance;
     if (account?.credit) this.credit = account.credit;
     if (account?.state) this.state = account.state;

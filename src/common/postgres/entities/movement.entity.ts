@@ -8,11 +8,11 @@ import { MovementCreateDto } from '../../../modules/movement/dto/movement.create
   ['accIdIncome', 'accIdOutcome'],
   {},
 )
-@Index('pkmovement', ['movId'], { unique: true })
+@Index('pkmovement', ['id'], { unique: true })
 @Entity('movement', { schema: 'public' })
 export class MovementEntity {
   @Column('uuid', { primary: true, name: 'mov_id' })
-  movId: string = uuid();
+  id: string = uuid();
 
   @Column('uuid', { name: 'acc_id_income' })
   accIdIncome: string;
@@ -23,10 +23,12 @@ export class MovementEntity {
   @Column('character varying', { name: 'mov_reason', length: 500 })
   reason: string;
 
-  @Column('bigint', { name: 'mov_amount' })
+  @Column('bigint', {
+    name: 'mov_amount',
+  })
   amount: number;
 
-  @Column('integer', { name: 'mov_fees', default: () => '1' })
+  @Column('integer', { name: 'mov_fees', default: () => '0' })
   fees: number;
 
   @Column('timestamp without time zone', {
@@ -35,25 +37,25 @@ export class MovementEntity {
   })
   movDatetime: Date;
 
-  @ManyToOne(() => AccountEntity, (account) => account.movements, {
+  @ManyToOne(() => AccountEntity, (account) => account.movementsIncome, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
-  @JoinColumn([{ name: 'acc_id_income', referencedColumnName: 'accId' }])
+  @JoinColumn([{ name: 'acc_id_income', referencedColumnName: 'id' }])
   accIdIncome2: AccountEntity;
 
-  @ManyToOne(() => AccountEntity, (account) => account.movements2, {
+  @ManyToOne(() => AccountEntity, (account) => account.movementsOutcome, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
   })
-  @JoinColumn([{ name: 'acc_id_outcome', referencedColumnName: 'accId' }])
+  @JoinColumn([{ name: 'acc_id_outcome', referencedColumnName: 'id' }])
   accIdOutcome2: AccountEntity;
 
   constructor(movement?: MovementCreateDto) {
-    this.accIdIncome = movement?.idIncome ?? '';
-    this.accIdOutcome = movement?.idOutcome ?? '';
-    this.reason = movement?.reason ?? '';
-    this.amount = movement?.amount ?? 50000000;
-    this.fees = movement?.fees ?? 60;
+    this.accIdIncome = movement?.accIdIncome as string;
+    this.accIdOutcome = movement?.accIdOutcome as string;
+    this.reason = movement?.reason as string;
+    this.amount = movement?.amount as number;
+    this.fees = movement?.fees as number;
   }
 }

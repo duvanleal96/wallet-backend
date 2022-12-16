@@ -31,34 +31,36 @@ export class ClientEntity {
     name: 'cli_created_at',
     default: () => 'now()',
   })
-  createAt: Date;
+  createdAt: Date;
 
   @Column('timestamp without time zone', {
     name: 'cli_updated_at',
     nullable: true,
   })
-  updateAt: Date | null;
+  updatedAt: Date | null;
 
   @Column('timestamp without time zone', {
     name: 'cli_deleted_at',
     nullable: true,
   })
-  deleteAll: Date | null;
+  deletedAt: Date | null;
 
-  @OneToOne(() => AccountEntity, (account) => account.cli)
+  @OneToOne(() => AccountEntity, (account) => account.client, {
+    cascade: ['insert'],
+  })
   account: AccountEntity;
 
-  @OneToOne(() => AppEntity, (app) => app.cli)
+  @OneToOne(() => AppEntity, (app) => app.client, { cascade: ['insert'] })
   app: AppEntity;
 
   constructor(client?: ClienteCreateDto) {
-    this.fullName = client?.fullName ?? '';
-    this.email = client?.email ?? '';
-    this.phone = client?.phone ?? '';
-    this.photo = client?.photo ?? '';
+    this.fullName = client?.fullName as string;
+    this.email = client?.email as string;
+    this.phone = client?.phone as string;
+    this.photo = client?.photo as string;
     this.state = client?.state ?? 1;
-    this.createAt = new Date();
-    this.updateAt = null;
+    this.createdAt = new Date();
+    this.updatedAt = null;
     this.account = new AccountEntity();
     this.app = new AppEntity();
   }

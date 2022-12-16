@@ -63,8 +63,8 @@ describe('ClientService', () => {
   it('should create a client (Not Equal)', async () => {
     // Arrange
     const client = new ClientEntity();
-    client.fullName = 'Julian Lasso';
-    client.email = 'julian.lasso@sofka.com.co';
+    client.fullName = 'duvan leal';
+    client.email = 'duvan.leal@sofka.com.co';
     client.phone = '1234567890';
     client.photo =
       'https://s.gravatar.com/avatar/875605e74d1bad33faa12f1e7ae1b155?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fju.png';

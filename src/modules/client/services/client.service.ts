@@ -27,6 +27,7 @@ export class ClientService {
     } catch (err) {
       // since we have errors lets rollback the changes we made
       await queryRunner.rollbackTransaction();
+      console.log(err);
       throw new HttpException(
         'Tenemos problemas para insertar un cliente',
         HttpStatus.CONFLICT,
@@ -34,25 +35,42 @@ export class ClientService {
     }
   }
 
-  async getClientByEmail(email: string): Promise<ClientGetDto> {
-    try {
-      const client = await this.clientRepository.findOneOrFail({
-        where: { email: email },
+  async getClientByEmail(data: string): Promise<ClientGetDto> {
+    const validEmail =
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    if (validEmail.test(data)) {
+      const client = await this.clientRepository.findOne({
+        where: {
+          email: data,
+        },
+        relations: {
+          account: true,
+          app: true,
+        },
       });
-      const color = await this.appService.getColor(client.id);
-      return {
-        id: client.id,
-        fullName: client.fullName,
-        email: client.email,
-        phone: client.phone,
-        photo: client.photo,
-        app: color ?? '',
-      };
-    } catch (error) {
+      if (client === null || client === undefined) {
+        throw new HttpException(
+          `Client with email ${data} does not exist`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return Promise.resolve(client);
+    }
+    const client = await this.clientRepository.findOne({
+      where: {
+        phone: data,
+      },
+      relations: {
+        account: true,
+        app: true,
+      },
+    });
+    if (client === null || client === undefined) {
       throw new HttpException(
-        `el cliente con ${email} no existe`,
+        `Client with phone ${data} does not exist`,
         HttpStatus.NOT_FOUND,
       );
     }
+    return Promise.resolve(client);
   }
 }
